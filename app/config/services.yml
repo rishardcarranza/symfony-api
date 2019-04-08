@@ -34,7 +34,12 @@ services:
     #     arguments:
     #         $someArgument: 'some_value'
 
+    app.jwt_auth:
+        class: AppBundle\Services\JwtAuth
+        arguments: ["@doctrine.orm.entity_manager"]
+        public: true
+
     app.helpers:
         class: AppBundle\Services\Helpers
-        arguments: ["null"]
+        arguments: ["@app.jwt_auth"]
         public: true
