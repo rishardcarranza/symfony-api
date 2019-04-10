@@ -2,3 +2,13 @@ user_new:
   path: /new
   defaults: {_controller: "AppBundle:User:new"}
   methods: POST
+
+user_edit:
+  path: /edit
+  defaults: {_controller: "AppBundle:User:edit"}
+  methods: POST
+
+user_upload_image:
+  path: /upload-image
+  defaults: {_controller: "AppBundle:User:uploadImage"}
+  methods: POST
