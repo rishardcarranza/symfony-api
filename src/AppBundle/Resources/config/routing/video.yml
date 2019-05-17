@@ -27,3 +27,13 @@ video_last_videos:
   path: /last-videos
   defaults: {_controller: "AppBundle:Video:lastVideos"}
   methods: GET
+
+video_detail:
+  path: /detail/{id}
+  defaults: {_controller: "AppBundle:Video:detail", id:null}
+  methods: GET
+
+video_search:
+  path: /search/{query}
+  defaults: {_controller: "AppBundle:Video:search", query:null}
+  methods: GET

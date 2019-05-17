@@ -319,4 +319,66 @@ class VideoController extends Controller {
         return $helpers->getJson($data);
     }
 
+    public function detailAction(Request $request, $id = null) {
+        $helpers = $this->get("app.helpers");
+
+        $em = $this->getDoctrine()->getManager();
+
+        $video = $em->getRepository("BackendBundle:Video")->findOneBy(array(
+            "id" => $id
+        ));
+
+        if ($video) {
+            $data = array();
+            $data["status"] = "success";
+            $data["code"] = 200;
+            $data["data"] = $video;
+        } else {
+            $data = array(
+                "status" => "error",
+                "code" => 400,
+                "msg" => "Video doesn't exists"
+            );
+        }
+
+        return $helpers->getJson($data);
+    }
+
+    public function searchAction(Request $request, $query) {
+        $helpers = $this->get("app.helpers");
+
+        $em = $this->getDoctrine()->getManager();
+
+        if ($query != null) {
+            $dql = "SELECT v 
+                    FROM BackendBundle:Video v 
+                    WHERE v.title LIKE :search
+                        OR v.description LIKE :search
+                    ORDER BY v.id DESC";
+            $query = $em->createQuery($dql)->setParameter("search", "%$query%");
+        } else {
+            $dql = "SELECT v FROM BackendBundle:Video v ORDER BY v.id DESC";
+            $query = $em->createQuery($dql);
+        }
+
+
+        $page = $request->query->getInt("page", 1);
+        $paginator = $this->get("knp_paginator");
+        $items_per_page = 6;
+
+        $pagination = $paginator->paginate($query, $page, $items_per_page);
+        $total_items_count = $pagination->getTotalItemCount();
+
+        $data = array(
+            "status" => "success",
+            "code" => 200,
+            "total_items" => $total_items_count,
+            "actual_page" => $page,
+            "items_per_page" => $items_per_page,
+            "total_pages" => ceil($total_items_count / $items_per_page),
+            "data" => $pagination
+        );
+
+        return $helpers->getJson($data);
+    }
 }
