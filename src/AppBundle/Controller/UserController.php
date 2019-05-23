@@ -236,15 +236,25 @@ class UserController extends Controller {
         $pagination = $paginator->paginate($query, $page, $items_per_page);
         $total_items_count = $pagination->getTotalItemCount();
 
-        $data = array(
-            "status" => "success",
-            "code" => 200,
-            "total_items" => $total_items_count,
-            "actual_page" => $page,
-            "items_per_page" => $items_per_page,
-            "total_pages" => ceil($total_items_count / $items_per_page),
-            "data" => $pagination
-        );
+        if ($user) {
+            $data = array(
+                "status" => "success",
+                "code" => 200,
+                "total_items" => $total_items_count,
+                "actual_page" => $page,
+                "items_per_page" => $items_per_page,
+                "total_pages" => ceil($total_items_count / $items_per_page),
+            );
+
+            $data["data"]["videos"] = $pagination;
+            $data["data"]["user"] = $user;
+        } else {
+            $data = array(
+                "status" => "error",
+                "code" => 400,
+                "msg" => "User don't exists."
+            );
+        }
 
         return $helpers->getJson($data);
     }
